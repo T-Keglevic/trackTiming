@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trackday Timing</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .input-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .input-group input {
+            padding: 10px;
+            font-size: 16px;
+            width: 15%;
+        }
+        .input-group button {
+            padding: 10px;
+            font-size: 16px;
+            margin: 0 5px;
+            cursor: pointer;
+        }
+        .input-group span {
+            padding: 10px;
+            font-size: 16px;
+            width: 20%;
+            text-align: center;
+            background-color: #e9e9e9;
+            border-radius: 4px;
+        }
+        .input-group .indicator {
+            width: 10%;
+            text-align: center;
+            font-weight: bold;
+        }
+        .input-group .indicator.in-progress {
+            color: green;
+        }
+        .input-group .indicator.stopped {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Rally Race Timing App</h1>
+        <div id="timing-lines"></div>
+    </div>
+
+    <script>
+        const timers = {};
+        const results = {};
+
+        function startTiming(carNumber) {
+            if (!carNumber) {
+                alert('Please enter a car number.');
+                return;
+            }
+            if (timers[carNumber]) {
+                alert('Timing for this car has already started.');
+                return;
+            }
+            timers[carNumber] = Date.now();
+            document.getElementById(`indicator-${carNumber}`).innerText = 'In Progress';
+            document.getElementById(`indicator-${carNumber}`).classList.add('in-progress');
+            document.getElementById(`indicator-${carNumber}`).classList.remove('stopped');
+        }
+
+        function stopTiming(carNumber) {
+            if (!carNumber) {
+                alert('Please enter a car number.');
+                return;
+            }
+            if (!timers[carNumber]) {
+                alert('Timing for this car has not started.');
+                return;
+            }
+            const startTime = timers[carNumber];
+            const endTime = Date.now();
+            const lapTime = (endTime - startTime) / 1000;
+            displayResult(carNumber, lapTime);
+            delete timers[carNumber];
+            document.getElementById(`indicator-${carNumber}`).innerText = 'Stopped';
+            document.getElementById(`indicator-${carNumber}`).classList.remove('in-progress');
+            document.getElementById(`indicator-${carNumber}`).classList.add('stopped');
+        }
+
+        function displayResult(carNumber, lapTime) {
+            results[carNumber] = lapTime.toFixed(2);
+            document.getElementById(`output-${carNumber}`).innerText = `${lapTime.toFixed(2)} seconds`;
+        }
+
+        function createTimingLines() {
+            const container = document.getElementById('timing-lines');
+            for (let i = 1; i <= 15; i++) {
+                const inputGroup = document.createElement('div');
+                inputGroup.className = 'input-group';
+
+                const input = document.createElement('input');
+                input.type = 'number';
+                input.placeholder = `Car #${i}`;
+                input.id = `car-${i}`;
+
+                const startButton = document.createElement('button');
+                startButton.innerText = 'Start';
+                startButton.onclick = () => startTiming(i);
+
+                const stopButton = document.createElement('button');
+                stopButton.innerText = 'Stop';
+                stopButton.onclick = () => stopTiming(i);
+
+                const output = document.createElement('span');
+                output.id = `output-${i}`;
+                output.innerText = '---';
+
+                const indicator = document.createElement('span');
+                indicator.className = 'indicator';
+                indicator.id = `indicator-${i}`;
+                indicator.innerText = '---';
+
+                inputGroup.appendChild(input);
+                inputGroup.appendChild(startButton);
+                inputGroup.appendChild(stopButton);
+                inputGroup.appendChild(output);
+                inputGroup.appendChild(indicator);
+
+                container.appendChild(inputGroup);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', createTimingLines);
+    </script>
+</body>
+</html>
