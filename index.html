@@ -59,16 +59,8 @@
             color: #ffffff; /* White text */
             border: 1px solid #388e3c; /* Darker green border */
         }
-       .input-group button.start-btn:hover {
+        .input-group button.start-btn:hover {
             background-color: #45a049; /* Slightly lighter green on hover */
-        }
-        .input-group button.lap-btn {
-            background-color: #ff9800; /* Orange background */
-            color: #ffffff; /* White text */
-            border: 1px solid #e68900; /* Darker orange border */
-        }
-        .input-group button.lap-btn:hover {
-            background-color: #f57c00; /* Slightly darker orange on hover */
         }
         .input-group button.stop-btn {
             background-color: #f44336; /* Red background */
@@ -77,6 +69,14 @@
         }
         .input-group button.stop-btn:hover {
             background-color: #e53935; /* Slightly lighter red on hover */
+        }
+        .input-group button.lap-btn {
+            background-color: #ff9800; /* Orange background */
+            color: #ffffff; /* White text */
+            border: 1px solid #e68900; /* Darker orange border */
+        }
+        .input-group button.lap-btn:hover {
+            background-color: #f57c00; /* Slightly darker orange on hover */
         }
         .input-group span {
             padding: 10px;
@@ -99,7 +99,7 @@
         .input-group .indicator.stopped {
             color: #f44336; /* Red color for stopped */
         }
-</style>
+    </style>
 </head>
 <body>
     <div class="container">
@@ -187,19 +187,19 @@
 
                 const startButton = document.createElement('button');
                 startButton.innerText = 'Start';
-                startButton.className = 'start-btn';
+                startButton.className = 'start-btn'; // Add this class
                 startButton.onclick = () => startTiming(i);
 
                 const lapButton = document.createElement('button');
                 lapButton.innerText = 'Lap';
-                lapButton.className = 'lap-btn';
+                lapButton.className = 'lap-btn'; // Add this class
                 lapButton.id = `lap-btn-${i}`;
                 lapButton.onclick = () => lapTiming(i);
                 lapButton.disabled = true;  // Initially disabled
 
                 const stopButton = document.createElement('button');
                 stopButton.innerText = 'Stop';
-                stopButton.className = 'stop-btn';
+                stopButton.className = 'stop-btn'; // Add this class
                 stopButton.onclick = () => stopTiming(i);
 
                 const output = document.createElement('span');
