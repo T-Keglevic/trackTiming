@@ -54,6 +54,22 @@
         .input-group button:hover {
             background-color: #555; /* Slightly lighter on hover */
         }
+        .input-group button.start-btn {
+            background-color: #4caf50; /* Green background */
+            color: #ffffff; /* White text */
+            border: 1px solid #388e3c; /* Darker green border */
+        }
+       .input-group button.start-btn:hover {
+            background-color: #45a049; /* Slightly lighter green on hover */
+        }
+        .input-group button.lap-btn {
+            background-color: #ff9800; /* Orange background */
+            color: #ffffff; /* White text */
+            border: 1px solid #e68900; /* Darker orange border */
+        }
+        .input-group button.lap-btn:hover {
+            background-color: #f57c00; /* Slightly darker orange on hover */
+        }
         .input-group button.stop-btn {
             background-color: #f44336; /* Red background */
             color: #ffffff; /* White text */
@@ -171,16 +187,19 @@
 
                 const startButton = document.createElement('button');
                 startButton.innerText = 'Start';
+                startButton.className = 'start-btn';
                 startButton.onclick = () => startTiming(i);
 
                 const lapButton = document.createElement('button');
                 lapButton.innerText = 'Lap';
+                lapButton.className = 'lap-btn';
                 lapButton.id = `lap-btn-${i}`;
                 lapButton.onclick = () => lapTiming(i);
                 lapButton.disabled = true;  // Initially disabled
 
                 const stopButton = document.createElement('button');
                 stopButton.innerText = 'Stop';
+                stopButton.className = 'stop-btn';
                 stopButton.onclick = () => stopTiming(i);
 
                 const output = document.createElement('span');
