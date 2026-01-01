@@ -3,182 +3,962 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trackday Timing</title>
+    <title>Moped Race Timing</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
+        * {
+            box-sizing: border-box;
             margin: 0;
-            padding: 20px;
-            background-color: #f4f4f4;
+            padding: 0;
         }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 0;
+            color: #333;
         }
-        h1 {
+
+        .header {
+            background: white;
+            padding: 15px 15px 0 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 15px;
             text-align: center;
+            color: #667eea;
         }
-        .input-group {
+
+        .tabs {
+            display: flex;
+            gap: 5px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 12px;
+            background: #f9fafb;
+            border: none;
+            border-radius: 8px 8px 0 0;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            color: #6b7280;
+            transition: all 0.2s;
+        }
+
+        .tab.active {
+            background: white;
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 15px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .control-group {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            margin-bottom: 10px;
+            gap: 10px;
         }
-        .input-group input {
-            padding: 10px;
-            font-size: 16px;
-            width: 15%;
+
+        .control-group label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
         }
-        .input-group button {
-            padding: 10px;
-            font-size: 16px;
-            margin: 0 5px;
+
+        .control-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
             cursor: pointer;
         }
-        .input-group span {
-            padding: 10px;
+
+        .control-group input[type="number"] {
+            width: 80px;
+            padding: 8px;
+            font-size: 14px;
+            border: 2px solid #e5e7eb;
+            border-radius: 6px;
+        }
+
+        .control-group input[type="number"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .export-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .export-btn, .add-racers-btn {
+            padding: 12px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.1s;
+            color: white;
+        }
+
+        .export-btn:active, .add-racers-btn:active {
+            transform: scale(0.95);
+        }
+
+        .export-btn.copy { background: #10b981; }
+        .export-btn.csv { background: #3b82f6; }
+        .export-btn.image { background: #8b5cf6; }
+        .export-btn.link { background: #f59e0b; }
+        .add-racers-btn { 
+            background: #6366f1; 
+            margin: 15px auto;
+            display: block;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .racer-card {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .racer-card.rank-1 { border-left: 5px solid #FFD700; }
+        .racer-card.rank-2 { border-left: 5px solid #C0C0C0; }
+        .racer-card.rank-3 { border-left: 5px solid #CD7F32; }
+
+        .racer-header {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+            align-items: center;
+        }
+
+        .racer-header input {
+            flex: 1;
+            padding: 12px;
             font-size: 16px;
-            width: 20%;
-            text-align: center;
-            background-color: #e9e9e9;
-            border-radius: 4px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
         }
-        .input-group .indicator {
-            width: 10%;
-            text-align: center;
+
+        .racer-header input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .racer-header input[type="text"]:first-child {
+            flex: 0 0 80px;
+        }
+
+        .timer-display {
+            font-size: 36px;
             font-weight: bold;
+            text-align: center;
+            padding: 15px;
+            background: #f9fafb;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            font-variant-numeric: tabular-nums;
         }
-        .input-group .indicator.in-progress {
-            color: green;
+
+        .timer-display.running {
+            background: #dcfce7;
+            color: #16a34a;
         }
-        .input-group .indicator.stopped {
-            color: red;
+
+        .timer-display.stopped {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .button-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .button-group.no-lap {
+            grid-template-columns: 1fr 1fr 1fr;
+        }
+
+        .btn {
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.1s, opacity 0.2s;
+            color: white;
+            min-height: 50px;
+        }
+
+        .btn:active {
+            transform: scale(0.95);
+        }
+
+        .btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .btn.hidden {
+            display: none;
+        }
+
+        .btn-start { background: #10b981; }
+        .btn-lap { background: #3b82f6; }
+        .btn-stop { background: #ef4444; }
+        .btn-reset { background: #6b7280; }
+
+        .penalty-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            padding: 10px;
+            background: #fef3c7;
+            border-radius: 8px;
+            border: 2px solid #fbbf24;
+        }
+
+        .penalty-control.hidden {
+            display: none;
+        }
+
+        .penalty-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #92400e;
+        }
+
+        .penalty-btn {
+            width: 36px;
+            height: 36px;
+            border: none;
+            border-radius: 6px;
+            background: #f59e0b;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        .penalty-btn:active {
+            transform: scale(0.9);
+        }
+
+        .penalty-count {
+            min-width: 30px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: #92400e;
+        }
+
+        .results {
+            font-size: 13px;
+            line-height: 1.6;
+            background: #f9fafb;
+            padding: 12px;
+            border-radius: 8px;
+        }
+
+        .results div {
+            margin-bottom: 6px;
+        }
+
+        .results strong {
+            color: #667eea;
+        }
+
+        .leaderboard {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .leaderboard h2 {
+            font-size: 20px;
+            margin-bottom: 15px;
+            text-align: center;
+            color: #667eea;
+        }
+
+        .leaderboard-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px;
+            margin-bottom: 8px;
+            background: #f9fafb;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .leaderboard-item.rank-1 { background: #fef3c7; border-left: 4px solid #FFD700; }
+        .leaderboard-item.rank-2 { background: #f3f4f6; border-left: 4px solid #C0C0C0; }
+        .leaderboard-item.rank-3 { background: #fed7aa; border-left: 4px solid #CD7F32; }
+
+        .leaderboard-rank {
+            font-weight: bold;
+            min-width: 30px;
+        }
+
+        .leaderboard-name {
+            flex: 1;
+            font-weight: 600;
+        }
+
+        .leaderboard-time {
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        @media (max-width: 480px) {
+            .button-group {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .button-group.no-lap {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .timer-display {
+                font-size: 28px;
+            }
+
+            .tab {
+                font-size: 12px;
+                padding: 10px 8px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Rally Race Timing App</h1>
-        <div id="timing-lines"></div>
+    <div class="header">
+        <h1>🏁 Moped Race Timing</h1>
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('setup')">⚙️ Setup</button>
+            <button class="tab" onclick="switchTab('timing')">⏱️ Timing</button>
+            <button class="tab" onclick="switchTab('results')">🏆 Results</button>
+        </div>
     </div>
 
+    <div id="setup-tab" class="tab-content active">
+        <div class="controls">
+            <div class="control-group">
+                <label>
+                    <input type="checkbox" id="best2-toggle">
+                    <span>Show Best 2 Sum</span>
+                </label>
+            </div>
+            <div class="control-group">
+                <label>
+                    <input type="checkbox" id="lap-toggle">
+                    <span>Enable Lap Button</span>
+                </label>
+            </div>
+            <div class="control-group">
+                <label>
+                    <input type="checkbox" id="sound-toggle">
+                    <span>Enable Sound</span>
+                </label>
+            </div>
+            <div class="control-group">
+                <label>
+                    <input type="checkbox" id="penalty-toggle">
+                    <span>Enable Penalties</span>
+                </label>
+            </div>
+            <div class="control-group">
+                <label>
+                    <span>Penalty Seconds:</span>
+                    <input type="number" id="penalty-seconds" value="5" min="1" max="99">
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div id="timing-tab" class="tab-content">
+        <div id="racers-container"></div>
+        <button class="add-racers-btn" onclick="addMoreRacers()">➕ Add 10 More Racers</button>
+    </div>
+
+    <div id="results-tab" class="tab-content">
+        <div class="leaderboard">
+            <h2>🏆 Leaderboard</h2>
+            <div id="leaderboard-content">No results yet</div>
+        </div>
+        <div class="export-buttons" style="margin-top: 20px;">
+            <button class="export-btn copy" onclick="copyResults()">📋 Copy Results</button>
+            <button class="export-btn csv" onclick="downloadCSV()">📊 Download CSV</button>
+            <button class="export-btn image" onclick="exportImage()">🖼️ Export Image</button>
+            <button class="export-btn link" onclick="generateShareLink()">🔗 Share Link</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
     <script>
-        const timers = {};
-        const results = {};
+        const racers = {};
+        let showBest2 = false;
+        let showLapButton = false;
+        let soundEnabled = false;
+        let penaltiesEnabled = false;
+        let penaltySeconds = 5;
+        let racerCount = 20;
+        let nextRacerNumber = 1;
 
-        function startTiming(carNumber) {
-            if (!carNumber) {
-                alert('Please enter a car number.');
-                return;
-            }
-            if (timers[carNumber]) {
-                alert('Timing for this car has already started.');
-                return;
-            }
-            timers[carNumber] = Date.now();
-            document.getElementById(`indicator-${carNumber}`).innerText = 'In Progress';
-            document.getElementById(`indicator-${carNumber}`).classList.add('in-progress');
-            document.getElementById(`indicator-${carNumber}`).classList.remove('stopped');
-
-            // Enable the Lap button when timing starts
-            document.getElementById(`lap-btn-${carNumber}`).disabled = false;
-        }
-
-        function stopTiming(carNumber) {
-            if (!carNumber) {
-                alert('Please enter a car number.');
-                return;
-            }
-            if (!timers[carNumber]) {
-                alert('Timing for this car has not started.');
-                return;
-            }
-            const startTime = timers[carNumber];
-            const endTime = Date.now();
-            const lapTime = (endTime - startTime) / 1000;
-            displayResult(carNumber, lapTime);
-            delete timers[carNumber];
-            document.getElementById(`indicator-${carNumber}`).innerText = 'Stopped';
-            document.getElementById(`indicator-${carNumber}`).classList.remove('in-progress');
-            document.getElementById(`indicator-${carNumber}`).classList.add('stopped');
-        }
-
-        function lapTiming(carNumber) {
-            stopTiming(carNumber);  // Stop the current lap and record the time
-            startTiming(carNumber); // Immediately start a new lap
-        }
-
-        function displayResult(carNumber, lapTime) {
-            // Initialize the array for this car if it doesn't exist
-            if (!results[carNumber]) {
-                results[carNumber] = [];
-            }
-            // Add the new lap time
-            results[carNumber].push(lapTime);
+        // Switch tabs
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
             
-            // Keep only the last 3 lap times
-            if (results[carNumber].length > 3) {
-                results[carNumber].shift();
-            }
+            event.target.classList.add('active');
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+        }
 
-            // Calculate the sum of the two best times
-            const sortedTimes = [...results[carNumber]].sort((a, b) => a - b);
-            const bestTwoSum = sortedTimes.length > 1 ? (sortedTimes[0] + sortedTimes[1]).toFixed(2) : 'N/A';
+        // Audio feedback
+        const beep = () => {
+            if (!soundEnabled) return;
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.frequency.value = 800;
+            gain.gain.value = 0.1;
+            osc.start();
+            osc.stop(ctx.currentTime + 0.1);
+        };
+
+        // Load from localStorage
+        function loadData() {
+            const saved = localStorage.getItem('mopedRacingData');
+            if (saved) {
+                const data = JSON.parse(saved);
+                Object.assign(racers, data.racers);
+                showBest2 = data.showBest2 || false;
+                showLapButton = data.showLapButton || false;
+                soundEnabled = data.soundEnabled || false;
+                penaltiesEnabled = data.penaltiesEnabled || false;
+                penaltySeconds = data.penaltySeconds || 5;
+                racerCount = data.racerCount || 20;
+                nextRacerNumber = data.nextRacerNumber || 1;
+                document.getElementById('best2-toggle').checked = showBest2;
+                document.getElementById('lap-toggle').checked = showLapButton;
+                document.getElementById('sound-toggle').checked = soundEnabled;
+                document.getElementById('penalty-toggle').checked = penaltiesEnabled;
+                document.getElementById('penalty-seconds').value = penaltySeconds;
+            }
+        }
+
+        // Save to localStorage
+        function saveData() {
+            localStorage.setItem('mopedRacingData', JSON.stringify({
+                racers,
+                showBest2,
+                showLapButton,
+                soundEnabled,
+                penaltiesEnabled,
+                penaltySeconds,
+                racerCount,
+                nextRacerNumber
+            }));
+        }
+
+        // Initialize racer
+        function initRacer(id) {
+            if (!racers[id]) {
+                racers[id] = {
+                    number: nextRacerNumber.toString(),
+                    name: '',
+                    laps: [],
+                    startTime: null,
+                    running: false,
+                    penalties: 0
+                };
+                nextRacerNumber++;
+            }
+        }
+
+        // Add penalty
+        function addPenalty(id) {
+            if (racers[id]) {
+                racers[id].penalties++;
+                updateDisplay(id);
+                updateLeaderboard();
+                saveData();
+            }
+        }
+
+        // Remove penalty
+        function removePenalty(id) {
+            if (racers[id] && racers[id].penalties > 0) {
+                racers[id].penalties--;
+                updateDisplay(id);
+                updateLeaderboard();
+                saveData();
+            }
+        }
+
+        // Start timing
+        function startTiming(id) {
+            initRacer(id);
+            if (racers[id].running) return;
             
-            // Display lap times and the sum of the two best times
-            document.getElementById(`output-${carNumber}`).innerText = `Lap times: ${results[carNumber].map(t => t.toFixed(2)).join(', ')} | Best 2 Sum: ${bestTwoSum} seconds`;
+            racers[id].startTime = Date.now();
+            racers[id].running = true;
+            beep();
+            updateDisplay(id);
+            startTimer(id);
+            saveData();
         }
 
-        function createTimingLines() {
-            const container = document.getElementById('timing-lines');
-            for (let i = 1; i <= 15; i++) {
-                const inputGroup = document.createElement('div');
-                inputGroup.className = 'input-group';
+        // Lap timing
+        function lapTiming(id) {
+            if (!racers[id] || !racers[id].running) return;
+            
+            const lapTime = (Date.now() - racers[id].startTime) / 1000;
+            racers[id].laps.push(lapTime);
+            racers[id].startTime = Date.now();
+            beep();
+            updateDisplay(id);
+            updateLeaderboard();
+            saveData();
+        }
 
-                const input = document.createElement('input');
-                input.type = 'number';
-                input.placeholder = `Car #${i}`;
-                input.id = `car-${i}`;
+        // Stop timing
+        function stopTiming(id) {
+            if (!racers[id] || !racers[id].running) return;
+            
+            const lapTime = (Date.now() - racers[id].startTime) / 1000;
+            racers[id].laps.push(lapTime);
+            racers[id].running = false;
+            racers[id].startTime = null;
+            beep();
+            updateDisplay(id);
+            updateLeaderboard();
+            saveData();
+        }
 
-                const startButton = document.createElement('button');
-                startButton.innerText = 'Start';
-                startButton.onclick = () => startTiming(i);
-
-                const lapButton = document.createElement('button');
-                lapButton.innerText = 'Lap';
-                lapButton.id = `lap-btn-${i}`;
-                lapButton.onclick = () => lapTiming(i);
-                lapButton.disabled = true;  // Initially disabled
-
-                const stopButton = document.createElement('button');
-                stopButton.innerText = 'Stop';
-                stopButton.onclick = () => stopTiming(i);
-
-                const output = document.createElement('span');
-                output.id = `output-${i}`;
-                output.innerText = '---';
-
-                const indicator = document.createElement('span');
-                indicator.className = 'indicator';
-                indicator.id = `indicator-${i}`;
-                indicator.innerText = '---';
-
-                inputGroup.appendChild(input);
-                inputGroup.appendChild(startButton);
-                inputGroup.appendChild(lapButton);
-                inputGroup.appendChild(stopButton);
-                inputGroup.appendChild(output);
-                inputGroup.appendChild(indicator);
-
-                container.appendChild(inputGroup);
+        // Reset racer
+        function resetRacer(id) {
+            if (racers[id]) {
+                racers[id].laps = [];
+                racers[id].running = false;
+                racers[id].startTime = null;
+                racers[id].penalties = 0;
+                updateDisplay(id);
+                updateLeaderboard();
+                saveData();
             }
         }
 
-        document.addEventListener('DOMContentLoaded', createTimingLines);
+        // Timer update
+        function startTimer(id) {
+            const updateTimer = () => {
+                if (racers[id] && racers[id].running) {
+                    updateDisplay(id);
+                    setTimeout(updateTimer, 100);
+                }
+            };
+            updateTimer();
+        }
+
+        // Update display
+        function updateDisplay(id) {
+            const racer = racers[id];
+            const timerEl = document.getElementById(`timer-${id}`);
+            const resultsEl = document.getElementById(`results-${id}`);
+            const startBtn = document.getElementById(`start-${id}`);
+            const lapBtn = document.getElementById(`lap-${id}`);
+            const stopBtn = document.getElementById(`stop-${id}`);
+            const buttonGroup = document.getElementById(`button-group-${id}`);
+            const penaltyControl = document.getElementById(`penalty-${id}`);
+            const penaltyCount = document.getElementById(`penalty-count-${id}`);
+            const penaltyLabel = document.getElementById(`penalty-label-${id}`);
+
+            // Timer display
+            if (racer.running) {
+                const elapsed = (Date.now() - racer.startTime) / 1000;
+                timerEl.textContent = formatTime(elapsed);
+                timerEl.className = 'timer-display running';
+            } else if (racer.laps.length > 0) {
+                timerEl.textContent = formatTime(racer.laps[racer.laps.length - 1]);
+                timerEl.className = 'timer-display stopped';
+            } else {
+                timerEl.textContent = '00:00.0';
+                timerEl.className = 'timer-display';
+            }
+
+            // Button states
+            startBtn.disabled = racer.running;
+            lapBtn.disabled = !racer.running;
+            stopBtn.disabled = !racer.running;
+
+            // Show/hide lap button
+            if (showLapButton) {
+                lapBtn.classList.remove('hidden');
+                buttonGroup.classList.remove('no-lap');
+            } else {
+                lapBtn.classList.add('hidden');
+                buttonGroup.classList.add('no-lap');
+            }
+
+            // Show/hide penalties
+            if (penaltiesEnabled) {
+                penaltyControl.classList.remove('hidden');
+                penaltyCount.textContent = racer.penalties;
+                penaltyLabel.textContent = `Penalties (${penaltySeconds}s):`;
+            } else {
+                penaltyControl.classList.add('hidden');
+            }
+
+            // Results display
+            if (racer.laps.length > 0) {
+                const bestLap = Math.min(...racer.laps);
+                const best2Sum = racer.laps.length >= 2 
+                    ? [...racer.laps].sort((a,b) => a - b).slice(0, 2).reduce((a,b) => a + b, 0)
+                    : racer.laps[0];
+                
+                const penaltyTime = racer.penalties * penaltySeconds;
+                const finalBestLap = bestLap + penaltyTime;
+                const finalBest2Sum = best2Sum + penaltyTime;
+
+                let html = `<div><strong>Laps:</strong> ${racer.laps.map((t, i) => `${i+1}: ${formatTime(t)}`).join(' | ')}</div>`;
+                html += `<div><strong>Best Lap:</strong> ${formatTime(bestLap)}</div>`;
+                
+                if (showBest2) {
+                    html += `<div><strong>Best 2 Sum:</strong> ${formatTime(best2Sum)}</div>`;
+                }
+                
+                if (penaltiesEnabled && racer.penalties > 0) {
+                    html += `<div><strong>Penalties:</strong> ${racer.penalties} × ${penaltySeconds}s = +${formatTime(penaltyTime)}</div>`;
+                    if (showBest2) {
+                        html += `<div><strong>Final Time:</strong> ${formatTime(finalBest2Sum)}</div>`;
+                    } else {
+                        html += `<div><strong>Final Time:</strong> ${formatTime(finalBestLap)}</div>`;
+                    }
+                }
+                
+                html += `<div><strong>Total Laps:</strong> ${racer.laps.length}</div>`;
+                resultsEl.innerHTML = html;
+            } else {
+                resultsEl.innerHTML = '<div>No laps recorded</div>';
+            }
+        }
+
+        // Format time
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = (seconds % 60).toFixed(1);
+            return `${mins.toString().padStart(2, '0')}:${secs.padStart(4, '0')}`;
+        }
+
+        // Update leaderboard
+        function updateLeaderboard() {
+            const results = Object.entries(racers)
+                .filter(([_, r]) => r.laps.length > 0)
+                .map(([id, r]) => {
+                    const bestLap = Math.min(...r.laps);
+                    const best2Sum = r.laps.length >= 2 
+                        ? [...r.laps].sort((a,b) => a - b).slice(0, 2).reduce((a,b) => a + b, 0)
+                        : r.laps[0];
+                    
+                    const penaltyTime = r.penalties * penaltySeconds;
+                    const finalTime = (showBest2 ? best2Sum : bestLap) + penaltyTime;
+                    
+                    return {
+                        id,
+                        number: r.number,
+                        name: r.name,
+                        finalTime,
+                        laps: r.laps.length
+                    };
+                })
+                .sort((a, b) => a.finalTime - b.finalTime);
+
+            const container = document.getElementById('leaderboard-content');
+            if (results.length === 0) {
+                container.innerHTML = 'No results yet';
+                return;
+            }
+
+            container.innerHTML = results.map((r, i) => {
+                const rankClass = i === 0 ? 'rank-1' : i === 1 ? 'rank-2' : i === 2 ? 'rank-3' : '';
+                const displayName = r.name || `#${r.number}`;
+                return `
+                    <div class="leaderboard-item ${rankClass}">
+                        <span class="leaderboard-rank">${i + 1}.</span>
+                        <span class="leaderboard-name">${displayName}</span>
+                        <span class="leaderboard-time">${formatTime(r.finalTime)}</span>
+                    </div>
+                `;
+            }).join('');
+
+            // Update racer card ranks
+            document.querySelectorAll('.racer-card').forEach(card => {
+                card.className = 'racer-card';
+            });
+            results.slice(0, 3).forEach((r, i) => {
+                const card = document.getElementById(`card-${r.id}`);
+                if (card) card.classList.add(`rank-${i + 1}`);
+            });
+        }
+
+        // Copy results to clipboard
+        function copyResults() {
+            const results = Object.entries(racers)
+                .filter(([_, r]) => r.laps.length > 0)
+                .map(([id, r]) => {
+                    const bestLap = Math.min(...r.laps);
+                    const best2Sum = r.laps.length >= 2 
+                        ? [...r.laps].sort((a,b) => a - b).slice(0, 2).reduce((a,b) => a + b, 0)
+                        : r.laps[0];
+                    const penaltyTime = r.penalties * penaltySeconds;
+                    const finalTime = (showBest2 ? best2Sum : bestLap) + penaltyTime;
+                    return {
+                        number: r.number,
+                        name: r.name,
+                        finalTime,
+                        laps: r.laps.length
+                    };
+                })
+                .sort((a, b) => a.finalTime - b.finalTime);
+
+            let text = '🏁 MOPED RACE RESULTS\n\n';
+            results.forEach((r, i) => {
+                const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : '  ';
+                const name = r.name || `#${r.number}`;
+                text += `${medal} ${i + 1}. ${name} - ${formatTime(r.finalTime)} (${r.laps} laps)\n`;
+            });
+
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Results copied to clipboard!');
+            });
+        }
+
+        // Download CSV
+        function downloadCSV() {
+            const results = Object.entries(racers)
+                .filter(([_, r]) => r.laps.length > 0)
+                .map(([id, r]) => {
+                    const bestLap = Math.min(...r.laps);
+                    const best2Sum = r.laps.length >= 2 
+                        ? [...r.laps].sort((a,b) => a - b).slice(0, 2).reduce((a,b) => a + b, 0)
+                        : r.laps[0];
+                    const penaltyTime = r.penalties * penaltySeconds;
+                    const finalTime = (showBest2 ? best2Sum : bestLap) + penaltyTime;
+                    return {
+                        number: r.number,
+                        name: r.name,
+                        finalTime,
+                        laps: r.laps.length
+                    };
+                })
+                .sort((a, b) => a.finalTime - b.finalTime);
+
+            let csv = 'Rank,Number,Name,Final Time,Total Laps\n';
+            results.forEach((r, i) => {
+                const name = r.name || '';
+                csv += `${i + 1},${r.number},${name},${formatTime(r.finalTime)},${r.laps}\n`;
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `moped-race-results-${new Date().toISOString().slice(0,10)}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Export as image
+        function exportImage() {
+            const leaderboard = document.querySelector('.leaderboard');
+            html2canvas(leaderboard, {
+                backgroundColor: '#ffffff',
+                scale: 2
+            }).then(canvas => {
+                canvas.toBlob(blob => {
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `moped-race-results-${new Date().toISOString().slice(0,10)}.png`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                });
+            });
+        }
+
+        // Generate share link
+        function generateShareLink() {
+            const results = Object.entries(racers)
+                .filter(([_, r]) => r.laps.length > 0)
+                .map(([id, r]) => {
+                    const bestLap = Math.min(...r.laps);
+                    const best2Sum = r.laps.length >= 2 
+                        ? [...r.laps].sort((a,b) => a - b).slice(0, 2).reduce((a,b) => a + b, 0)
+                        : r.laps[0];
+                    const penaltyTime = r.penalties * penaltySeconds;
+                    const finalTime = (showBest2 ? best2Sum : bestLap) + penaltyTime;
+                    return {
+                        n: r.number,
+                        nm: r.name,
+                        ft: finalTime.toFixed(2),
+                        lc: r.laps.length
+                    };
+                });
+
+            const data = btoa(JSON.stringify(results));
+            const url = `${window.location.origin}${window.location.pathname}#results=${data}`;
+            
+            if (url.length > 2000) {
+                alert('⚠️ Warning: Too many racers for share link! URL is too long. Use CSV export instead.');
+                return;
+            }
+            
+            navigator.clipboard.writeText(url).then(() => {
+                alert('Share link copied to clipboard!');
+            });
+        }
+
+        // Add more racers
+        function addMoreRacers() {
+            const startId = racerCount + 1;
+            const endId = racerCount + 10;
+            
+            for (let i = startId; i <= endId; i++) {
+                createRacerCard(i);
+            }
+            
+            racerCount += 10;
+            saveData();
+        }
+
+        // Create single racer card
+        function createRacerCard(i) {
+            initRacer(i);
+            const racer = racers[i];
+            
+            const container = document.getElementById('racers-container');
+            const card = document.createElement('div');
+            card.className = 'racer-card';
+            card.id = `card-${i}`;
+            card.innerHTML = `
+                <div class="racer-header">
+                    <input type="text" placeholder="#" maxlength="3" value="${racer.number}" 
+                           oninput="racers[${i}].number = this.value; saveData(); updateLeaderboard();">
+                    <input type="text" placeholder="Name" value="${racer.name}"
+                           oninput="racers[${i}].name = this.value; saveData(); updateLeaderboard();">
+                </div>
+                <div class="timer-display" id="timer-${i}">00:00.0</div>
+                <div class="penalty-control hidden" id="penalty-${i}">
+                    <span class="penalty-label" id="penalty-label-${i}">Penalties (${penaltySeconds}s):</span>
+                    <button class="penalty-btn" onclick="removePenalty(${i})">−</button>
+                    <span class="penalty-count" id="penalty-count-${i}">0</span>
+                    <button class="penalty-btn" onclick="addPenalty(${i})">+</button>
+                </div>
+                <div class="button-group ${showLapButton ? '' : 'no-lap'}" id="button-group-${i}">
+                    <button class="btn btn-start" id="start-${i}" onclick="startTiming(${i})">Start</button>
+                    <button class="btn btn-lap ${showLapButton ? '' : 'hidden'}" id="lap-${i}" onclick="lapTiming(${i})" disabled>Lap</button>
+                    <button class="btn btn-stop" id="stop-${i}" onclick="stopTiming(${i})" disabled>Stop</button>
+                    <button class="btn btn-reset" onclick="resetRacer(${i})">Reset</button>
+                </div>
+                <div class="results" id="results-${i}">
+                    <div>No laps recorded</div>
+                </div>
+            `;
+            container.appendChild(card);
+            updateDisplay(i);
+        }
+
+        // Create initial racer cards
+        function createRacerCards() {
+            for (let i = 1; i <= racerCount; i++) {
+                createRacerCard(i);
+            }
+        }
+
+        // Toggle handlers
+        document.getElementById('best2-toggle').addEventListener('change', (e) => {
+            showBest2 = e.target.checked;
+            for (let i = 1; i <= racerCount; i++) {
+                updateDisplay(i);
+            }
+            updateLeaderboard();
+            saveData();
+        });
+
+        document.getElementById('lap-toggle').addEventListener('change', (e) => {
+            showLapButton = e.target.checked;
+            for (let i = 1; i <= racerCount; i++) {
+                updateDisplay(i);
+            }
+            saveData();
+        });
+
+        document.getElementById('sound-toggle').addEventListener('change', (e) => {
+            soundEnabled = e.target.checked;
+            saveData();
+        });
+
+        document.getElementById('penalty-toggle').addEventListener('change', (e) => {
+            penaltiesEnabled = e.target.checked;
+            for (let i = 1; i <= racerCount; i++) {
+                updateDisplay(i);
+            }
+            updateLeaderboard();
+            saveData();
+        });
+
+        document.getElementById('penalty-seconds').addEventListener('input', (e) => {
+            penaltySeconds = parseInt(e.target.value) || 5;
+            for (let i = 1; i <= racerCount; i++) {
+                updateDisplay(i);
+            }
+            updateLeaderboard();
+            saveData();
+        });
+
+        // Initialize
+        loadData();
+        createRacerCards();
+        updateLeaderboard();
     </script>
 </body>
 </html>
