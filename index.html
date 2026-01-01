@@ -450,6 +450,13 @@
         let racerCount = 20;
         let nextRacerNumber = 1;
 
+        // Haptic feedback
+        function haptic() {
+            if ('vibrate' in navigator) {
+                navigator.vibrate(10); // 10ms vibration
+            }
+        }
+
         // Switch tabs
         function switchTab(tabName) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
