@@ -214,9 +214,10 @@
 
         .racer-header {
             display: flex;
+            flex-direction: column;
             gap: 10px;
             margin-bottom: 12px;
-            align-items: center;
+            align-items: stretch;
         }
 
         .racer-header input {
@@ -232,10 +233,6 @@
         .racer-header input:focus {
             outline: none;
             border-color: var(--accent-color);
-        }
-
-        .racer-header input[type="text"]:first-child {
-            flex: 0 0 80px;
         }
 
         .timer-display {
@@ -361,7 +358,7 @@
             background: var(--results-bg);
             padding: 12px;
             border-radius: 8px;
-            color: var(--text-secondary)
+            color: var(--text-secondary);
         }
 
         .results div {
@@ -429,10 +426,15 @@
             }
 
             .tab {
-                font-size: 12px;
-                padding: 10px 8px;
+                font-size: 11px;
+                padding: 10px 4px;
+            }
+
+            .header h1 {
+                font-size: 20px;
             }
         }
+
     </style>
 </head>
 <body>
@@ -788,6 +790,9 @@
 
         // Format time
         function formatTime(seconds) {
+            if (isNaN(seconds) || seconds === null || seconds === undefined) {
+                return '00:00.0';
+            }
             const mins = Math.floor(seconds / 60);
             const secs = (seconds % 60).toFixed(1);
             return `${mins.toString().padStart(2, '0')}:${secs.padStart(4, '0')}`;
@@ -913,12 +918,12 @@
             URL.revokeObjectURL(url);
         }
 
-        // Export as image
+       // Export as image
         function exportImage() {
             haptic();
             const leaderboard = document.querySelector('.leaderboard');
             html2canvas(leaderboard, {
-                backgroundColor: '#ffffff',
+                backgroundColor: darkMode ? '#1e293b' : '#ffffff',
                 scale: 2
             }).then(canvas => {
                 canvas.toBlob(blob => {
