@@ -7,6 +7,50 @@
     <meta name="mobile-web-app-capable" content="yes">
     <title>Moped Race Timing</title>
     <style>
+        body.light-mode {
+            --bg-gradient-start: #667eea;
+            --bg-gradient-end: #764ba2;
+            --card-bg: #ffffff;
+            --text-primary: #333333;
+            --text-secondary: #6b7280;
+            --border-color: #e5e7eb;
+            --accent-color: #667eea;
+            --timer-bg: #f9fafb;
+            --timer-running-bg: #dcfce7;
+            --timer-running-text: #16a34a;
+            --timer-stopped-bg: #fee2e2;
+            --timer-stopped-text: #dc2626;
+            --results-bg: #f9fafb;
+            --penalty-bg: #fef3c7;
+            --penalty-border: #fbbf24;
+            --penalty-text: #92400e;
+            --leaderboard-rank1: #fef3c7;
+            --leaderboard-rank2: #f3f4f6;
+            --leaderboard-rank3: #fed7aa;
+        }
+
+        body {
+            --bg-gradient-start: #0f172a;
+            --bg-gradient-end: #0f172a;
+            --card-bg: #1e293b;
+            --text-primary: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --border-color: #334155;
+            --accent-color: #60a5fa;
+            --timer-bg: #0f172a;
+            --timer-running-bg: #064e3b;
+            --timer-running-text: #34d399;
+            --timer-stopped-bg: #7f1d1d;
+            --timer-stopped-text: #f87171;
+            --results-bg: #0f172a;
+            --penalty-bg: #422006;
+            --penalty-border: #f59e0b;
+            --penalty-text: #fbbf24;
+            --leaderboard-rank1: #422006;
+            --leaderboard-rank2: #1e293b;
+            --leaderboard-rank3: #431407;
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
@@ -15,11 +59,11 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
             min-height: 100vh;
             padding: 0;
             padding-top: 120px;
-            color: #333;
+            color: var(--text-primary);
         }
 
         .header {
@@ -27,9 +71,9 @@
             top: 0;
             left: 0;
             right: 0;
-            background: white;
+            background: var(--card-bg);
             padding: 15px 15px 0 15px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
             z-index: 1000;
         }
 
@@ -37,32 +81,32 @@
             font-size: 24px;
             margin-bottom: 15px;
             text-align: center;
-            color: #667eea;
+            color: var(--accent-color);
         }
 
         .tabs {
             display: flex;
             gap: 5px;
-            border-bottom: 2px solid #e5e7eb;
+            border-bottom: 2px solid var(--border-color);
         }
 
         .tab {
             flex: 1;
             padding: 12px;
-            background: #f9fafb;
+            background: var(--timer-bg);
             border: none;
             border-radius: 8px 8px 0 0;
             cursor: pointer;
             font-size: 14px;
             font-weight: 600;
-            color: #6b7280;
+            color: var(--text-secondary);
             transition: all 0.2s;
         }
 
         .tab.active {
-            background: white;
-            color: #667eea;
-            border-bottom: 3px solid #667eea;
+            background: var(--card-bg);
+            color: var(--accent-color);
+            border-bottom: 3px solid var(--accent-color);
         }
 
         .tab-content {
@@ -78,7 +122,7 @@
             display: flex;
             flex-direction: column;
             gap: 15px;
-            background: white;
+            background: var(--card-bg);
             padding: 20px;
             border-radius: 12px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
@@ -110,13 +154,15 @@
             width: 80px;
             padding: 8px;
             font-size: 14px;
-            border: 2px solid #e5e7eb;
+            border: 2px solid var(--border-color);
             border-radius: 6px;
+            background: var(--timer-bg);
+            color: var(--text-primary);
         }
 
         .control-group input[type="number"]:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: var(--accent-color);
         }
 
         .export-buttons {
@@ -155,7 +201,7 @@
         }
 
         .racer-card {
-            background: white;
+            background: var(--card-bg);
             border-radius: 12px;
             padding: 15px;
             margin-bottom: 12px;
@@ -177,13 +223,15 @@
             flex: 1;
             padding: 14px;
             font-size: 16px;
-            border: 2px solid #e5e7eb;
+            border: 2px solid var(--border-color);
             border-radius: 8px;
+            background: var(--timer-bg);
+            color: var(--text-primary);
         }
 
         .racer-header input:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: var(--accent-color);
         }
 
         .racer-header input[type="text"]:first-child {
@@ -195,20 +243,29 @@
             font-weight: bold;
             text-align: center;
             padding: 15px;
-            background: #f9fafb;
+            background: var(--timer-bg);
             border-radius: 8px;
             margin-bottom: 12px;
             font-variant-numeric: tabular-nums;
+            border: 2px solid var(--border-color);
         }
 
         .timer-display.running {
-            background: #dcfce7;
-            color: #16a34a;
+            background: var(--timer-running-bg);
+            color: var(--timer-running-text);
+            border-color: var(--timer-running-border);
+            animation: pulse 2s infinite;
         }
 
         .timer-display.stopped {
-            background: #fee2e2;
-            color: #dc2626;
+            background: var(--timer-stopped-bg);
+            color: var(--timer-stopped-text);
+            border-color: var(--timer-stopped-border);
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.85; }
         }
 
         .button-group {
@@ -258,9 +315,9 @@
             gap: 8px;
             margin-bottom: 12px;
             padding: 10px;
-            background: #fef3c7;
+            background: var(--penalty-bg);
             border-radius: 8px;
-            border: 2px solid #fbbf24;
+            border: 2px solid var(--penalty-border);
         }
 
         .penalty-control.hidden {
@@ -270,7 +327,7 @@
         .penalty-label {
             font-size: 14px;
             font-weight: 600;
-            color: #92400e;
+            color: var(--penalty-text);
         }
 
         .penalty-btn {
@@ -295,15 +352,16 @@
             text-align: center;
             font-size: 18px;
             font-weight: bold;
-            color: #92400e;
+            color: var(--penalty-text);
         }
 
         .results {
             font-size: 13px;
             line-height: 1.6;
-            background: #f9fafb;
+            background: var(--results-bg);
             padding: 12px;
             border-radius: 8px;
+            color: var(--text-secondary)
         }
 
         .results div {
@@ -311,11 +369,11 @@
         }
 
         .results strong {
-            color: #667eea;
+            color: var(--accent-color);
         }
 
         .leaderboard {
-            background: white;
+            background: var(--card-bg);
             border-radius: 12px;
             padding: 15px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
@@ -325,7 +383,7 @@
             font-size: 20px;
             margin-bottom: 15px;
             text-align: center;
-            color: #667eea;
+            color: var(--accent-color);
         }
 
         .leaderboard-item {
@@ -333,14 +391,14 @@
             justify-content: space-between;
             padding: 12px;
             margin-bottom: 8px;
-            background: #f9fafb;
+            background: var(--timer-bg);
             border-radius: 8px;
             font-size: 14px;
         }
 
-        .leaderboard-item.rank-1 { background: #fef3c7; border-left: 4px solid #FFD700; }
-        .leaderboard-item.rank-2 { background: #f3f4f6; border-left: 4px solid #C0C0C0; }
-        .leaderboard-item.rank-3 { background: #fed7aa; border-left: 4px solid #CD7F32; }
+        .leaderboard-item.rank-1 { background: var(--leaderboard-rank1); border-left: 4px solid #FFD700; }
+        .leaderboard-item.rank-2 { background: var(--leaderboard-rank2); border-left: 4px solid #C0C0C0; }
+        .leaderboard-item.rank-3 { background: var(--leaderboard-rank3); border-left: 4px solid #CD7F32; }
 
         .leaderboard-rank {
             font-weight: bold;
@@ -354,7 +412,7 @@
 
         .leaderboard-time {
             font-weight: bold;
-            color: #667eea;
+            color: var(--accent-color);
         }
 
         @media (max-width: 480px) {
@@ -389,6 +447,12 @@
 
     <div id="setup-tab" class="tab-content active">
         <div class="controls">
+            <div class="control-group">
+                <label>
+                    <input type="checkbox" id="dark-mode-toggle" checked>
+                    <span>Dark Mode</span>
+                </label>
+            </div>
             <div class="control-group">
                 <label>
                     <input type="checkbox" id="best2-toggle">
@@ -444,6 +508,7 @@
 
     <script>
         const racers = {};
+        let darkMode = true;
         let showBest2 = false;
         let showLapButton = false;
         let soundEnabled = false;
@@ -457,6 +522,17 @@
             if ('vibrate' in navigator) {
                 navigator.vibrate(10); // 10ms vibration
             }
+        }
+
+        // Toggle dark mode
+        function toggleDarkMode(enabled) {
+            darkMode = enabled;
+            if (enabled) {
+                document.body.classList.remove('light-mode');
+            } else {
+                document.body.classList.add('light-mode');
+            }
+            saveData();
         }
 
         // Switch tabs
@@ -501,6 +577,9 @@
                 document.getElementById('sound-toggle').checked = soundEnabled;
                 document.getElementById('penalty-toggle').checked = penaltiesEnabled;
                 document.getElementById('penalty-seconds').value = penaltySeconds;
+                darkMode = data.darkMode !== undefined ? data.darkMode : true;
+                document.getElementById('dark-mode-toggle').checked = darkMode;
+                toggleDarkMode(darkMode);
             }
         }
 
@@ -508,6 +587,7 @@
         function saveData() {
             localStorage.setItem('mopedRacingData', JSON.stringify({
                 racers,
+                darkMode,
                 showBest2,
                 showLapButton,
                 soundEnabled,
@@ -982,6 +1062,10 @@
             }
             updateLeaderboard();
             saveData();
+        });
+
+        document.getElementById('dark-mode-toggle').addEventListener('change', (e) => {
+            toggleDarkMode(e.target.checked);
         });
 
         // Initialize
