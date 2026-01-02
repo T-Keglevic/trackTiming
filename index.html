@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
-    <title>Moped Race Timing</title>
+    <title>Race Timing</title>
     <style>
         body.light-mode {
             --bg-gradient-start: #667eea;
@@ -439,7 +439,7 @@
 </head>
 <body>
     <div class="header">
-        <h1>🏁 Moped Race Timing</h1>
+        <h1>🏁 Race Timing</h1>
         <div class="tabs">
             <button class="tab active" onclick="switchTab('setup')">⚙️ Setup</button>
             <button class="tab" onclick="switchTab('timing')">⏱️ Timing</button>
@@ -875,7 +875,7 @@
                 })
                 .sort((a, b) => a.finalTime - b.finalTime);
 
-            let text = '🏁 MOPED RACE RESULTS\n\n';
+            let text = '🏁 RACE RESULTS\n\n';
             results.forEach((r, i) => {
                 const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : '  ';
                 const name = r.name || `#${r.number}`;
