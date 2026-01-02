@@ -485,6 +485,11 @@
                     <input type="number" id="penalty-seconds" value="5" min="1" max="99">
                 </label>
             </div>
+            <div class="control-group">
+                <button class="export-btn" onclick="resetAll()" style="background: #ef4444; width: 100%;">
+                    🗑️ Reset All Data
+                </button>
+</div>
         </div>
     </div>
 
@@ -1026,6 +1031,16 @@
             for (let i = 1; i <= racerCount; i++) {
                 createRacerCard(i);
             }
+        }
+
+        // Reset all data to default
+        function resetAll() {
+            if (!confirm('⚠️ Are you sure you want to reset ALL recorded data? This cannot be undone!')) {
+                return;
+            }
+            haptic();
+            localStorage.removeItem('mopedRacingData');
+            window.location.reload();
         }
 
         // Toggle handlers
